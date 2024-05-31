@@ -507,6 +507,21 @@ func (c *Public) Process(data []byte, e *events.Basic) bool {
 				c.StructuredEventChan <- e
 			}()
 			return true
+		case "bbo-tbt":
+			// order book
+			// 1 depth level snapshot will be pushed every time. Snapshot data will be pushed every 10 ms when there are changes in the 1 depth level snapshot.
+			e := public.OrderBook{}
+			err := json.Unmarshal(data, &e)
+			if err != nil {
+				return false
+			}
+			go func() {
+				if c.obCh != nil {
+					c.obCh <- &e
+				}
+				c.StructuredEventChan <- e
+			}()
+			return true
 		default:
 			// special cases
 			// market price candlestick channel
