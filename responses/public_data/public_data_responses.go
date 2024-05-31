@@ -1,8 +1,8 @@
 package public_data
 
 import (
-	"github.com/amir-the-h/okex/models/publicdata"
-	"github.com/amir-the-h/okex/responses"
+	"github.com/dimkus/okex/models/publicdata"
+	"github.com/dimkus/okex/responses"
 )
 
 type (
