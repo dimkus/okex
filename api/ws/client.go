@@ -22,7 +22,6 @@ import (
 type ClientWs struct {
 	Cancel        context.CancelFunc
 	DoneChan      chan interface{}
-	RawEventChan  chan *events.Basic
 	ErrChan       chan *events.Error
 	SubscribeChan chan *events.Subscribe
 	UnsubscribeCh chan *events.Unsubscribe
@@ -64,7 +63,6 @@ func NewClient(ctx context.Context, apiKey, secretKey, passphrase string, url ma
 		url:          url,
 		sendChan:     map[bool]chan []byte{true: make(chan []byte, 3), false: make(chan []byte, 3)},
 		DoneChan:     make(chan interface{}),
-		RawEventChan: make(chan *events.Basic),
 		conn:         make(map[bool]*websocket.Conn),
 		dialer:       websocket.DefaultDialer,
 		lastTransmit: make(map[bool]*time.Time),
@@ -311,25 +309,7 @@ func (c *ClientWs) sender(p bool) error {
 	}
 }
 
-type processEvent struct {
-	event *events.Basic
-	data  []byte
-}
-
 func (c *ClientWs) receiver(p bool) error {
-	processCh := make(chan *processEvent, 10)
-
-	go func(c *ClientWs, processCh chan *processEvent) {
-		for {
-			select {
-			case event := <-processCh:
-				c.process(event.data, event.event)
-			case <-c.ctx.Done():
-				return
-			}
-		}
-	}(c, processCh)
-
 	for {
 		select {
 		case <-c.ctx.Done():
@@ -338,11 +318,21 @@ func (c *ClientWs) receiver(p bool) error {
 			c.mu[p].RLock()
 			err := c.conn[p].SetReadDeadline(time.Now().Add(pongWait))
 			if err != nil {
+				c.onErr(&events.Error{
+					Msg: err.Error(),
+					Op:  "ws SetReadDeadline",
+				})
 				c.mu[p].RUnlock()
 				return err
 			}
 			mt, data, err := c.conn[p].ReadMessage()
 			if err != nil {
+
+				c.onErr(&events.Error{
+					Msg: err.Error(),
+					Op:  "ws ReadMessage",
+				})
+
 				c.mu[p].RUnlock()
 				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 					return c.conn[p].Close()
@@ -360,7 +350,7 @@ func (c *ClientWs) receiver(p bool) error {
 				if err := json.Unmarshal(data, e); err != nil {
 					return err
 				}
-				processCh <- &processEvent{event: e, data: data}
+				c.process(data, e)
 			}
 		}
 	}
@@ -386,29 +376,25 @@ func (c *ClientWs) handleCancel(msg string) error {
 func (c *ClientWs) process(data []byte, e *events.Basic) bool {
 	switch e.Event {
 	case "error":
-		e := events.Error{}
-		_ = json.Unmarshal(data, &e)
-		go func() {
-			c.ErrChan <- &e
-		}()
+		e := new(events.Error)
+		_ = json.Unmarshal(data, e)
+		c.onErr(e)
 		return true
 	case "subscribe":
-		e := events.Subscribe{}
-		_ = json.Unmarshal(data, &e)
-		go func() {
-			if c.SubscribeChan != nil {
-				c.SubscribeChan <- &e
-			}
-		}()
+		if c.SubscribeChan == nil {
+			return false
+		}
+		e := new(events.Subscribe)
+		_ = json.Unmarshal(data, e)
+		c.SubscribeChan <- e
 		return true
 	case "unsubscribe":
-		e := events.Unsubscribe{}
-		_ = json.Unmarshal(data, &e)
-		go func() {
-			if c.UnsubscribeCh != nil {
-				c.UnsubscribeCh <- &e
-			}
-		}()
+		if c.UnsubscribeCh == nil {
+			return false
+		}
+		e := new(events.Unsubscribe)
+		_ = json.Unmarshal(data, e)
+		c.UnsubscribeCh <- e
 		return true
 	case "login":
 		if time.Since(*c.AuthRequested).Seconds() > 30 {
@@ -417,13 +403,13 @@ func (c *ClientWs) process(data []byte, e *events.Basic) bool {
 			break
 		}
 		c.Authorized = true
-		e := events.Login{}
-		_ = json.Unmarshal(data, &e)
-		go func() {
-			if c.LoginChan != nil {
-				c.LoginChan <- &e
-			}
-		}()
+		if c.LoginChan == nil {
+			return false
+		}
+		e := new(events.Login)
+		_ = json.Unmarshal(data, e)
+		c.LoginChan <- e
+
 		return true
 	}
 
@@ -440,15 +426,20 @@ func (c *ClientWs) process(data []byte, e *events.Basic) bool {
 			ee.Event = "error"
 			return c.process(data, &ee)
 		}
-		e := events.Success{}
-		_ = json.Unmarshal(data, &e)
-		go func() {
-			if c.SuccessChan != nil {
-				c.SuccessChan <- &e
-			}
-		}()
+		e := new(events.Success)
+		_ = json.Unmarshal(data, e)
+		if c.SuccessChan != nil {
+			c.SuccessChan <- e
+		}
 		return true
 	}
-	go func() { c.RawEventChan <- e }()
 	return false
+}
+
+func (c *ClientWs) onErr(errEvent *events.Error) {
+	if c.ErrChan == nil {
+		return
+	}
+
+	c.ErrChan <- errEvent
 }
