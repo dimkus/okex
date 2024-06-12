@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/funding"
 	responses "github.com/dimkus/okex/responses/funding"
@@ -35,9 +34,7 @@ func (c *Funding) GetCurrencies(ctx context.Context) (response responses.GetCurr
 	}
 	defer res.Body.Close()
 
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
-
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -56,8 +53,8 @@ func (c *Funding) GetBalance(ctx context.Context, req requests.GetBalance) (resp
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -73,8 +70,8 @@ func (c *Funding) FundsTransfer(ctx context.Context, req requests.FundsTransfer)
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -90,8 +87,8 @@ func (c *Funding) AssetBillsDetails(ctx context.Context, req requests.AssetBills
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -107,8 +104,8 @@ func (c *Funding) GetDepositAddress(ctx context.Context, req requests.GetDeposit
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -124,8 +121,8 @@ func (c *Funding) GetDepositHistory(ctx context.Context, req requests.GetDeposit
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -141,8 +138,8 @@ func (c *Funding) Withdrawal(ctx context.Context, req requests.Withdrawal) (resp
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -158,8 +155,8 @@ func (c *Funding) GetWithdrawalHistory(ctx context.Context, req requests.GetWith
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -174,8 +171,8 @@ func (c *Funding) PiggyBankPurchaseRedemption(ctx context.Context, req requests.
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -190,7 +187,7 @@ func (c *Funding) GetPiggyBankBalance(ctx context.Context, req requests.GetPiggy
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }

@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/subaccount"
 	responses "github.com/dimkus/okex/responses/sub_account"
@@ -34,8 +33,8 @@ func (c *SubAccount) ViewList(ctx context.Context, req requests.ViewList) (respo
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -54,8 +53,8 @@ func (c *SubAccount) CreateAPIKey(ctx context.Context, req requests.CreateAPIKey
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -71,8 +70,8 @@ func (c *SubAccount) QueryAPIKey(ctx context.Context, req requests.QueryAPIKey) 
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -91,8 +90,8 @@ func (c *SubAccount) ResetAPIKey(ctx context.Context, req requests.CreateAPIKey)
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -108,8 +107,8 @@ func (c *SubAccount) DeleteAPIKey(ctx context.Context, req requests.DeleteAPIKey
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -126,8 +125,8 @@ func (c *SubAccount) GetBalance(ctx context.Context, req requests.GetBalance) (r
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -143,8 +142,8 @@ func (c *SubAccount) HistoryTransfer(ctx context.Context, req requests.HistoryTr
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -160,7 +159,7 @@ func (c *SubAccount) ManageTransfers(ctx context.Context, req requests.ManageTra
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }

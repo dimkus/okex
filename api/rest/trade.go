@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/trade"
 	responses "github.com/dimkus/okex/responses/trade"
@@ -39,9 +38,8 @@ func (c *Trade) PlaceOrder(ctx context.Context, req []requests.PlaceOrder) (resp
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -57,9 +55,8 @@ func (c *Trade) PlaceMultipleOrders(ctx context.Context, req []requests.PlaceOrd
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -85,8 +82,8 @@ func (c *Trade) CandleOrder(ctx context.Context, req []requests.CancelOrder) (re
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -112,8 +109,8 @@ func (c *Trade) AmendOrder(ctx context.Context, req []requests.OrderList) (respo
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -129,8 +126,8 @@ func (c *Trade) ClosePosition(ctx context.Context, req requests.ClosePosition) (
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -146,8 +143,8 @@ func (c *Trade) GetOrderDetail(ctx context.Context, req requests.OrderDetails) (
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -163,8 +160,8 @@ func (c *Trade) GetOrderList(ctx context.Context, req requests.OrderList) (respo
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -186,8 +183,8 @@ func (c *Trade) GetOrderHistory(ctx context.Context, req requests.OrderList, arc
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -210,8 +207,8 @@ func (c *Trade) GetTransactionDetails(ctx context.Context, req requests.Transact
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -229,9 +226,8 @@ func (c *Trade) PlaceAlgoOrder(ctx context.Context, req requests.PlaceAlgoOrder)
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -247,9 +243,8 @@ func (c *Trade) CancelAlgoOrder(ctx context.Context, req requests.CancelAlgoOrde
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -267,9 +262,8 @@ func (c *Trade) CancelAdvanceAlgoOrder(ctx context.Context, req requests.CancelA
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -296,8 +290,7 @@ func (c *Trade) GetAlgoOrderList(ctx context.Context, req requests.AlgoOrderList
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }

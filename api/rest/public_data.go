@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/public"
@@ -35,8 +34,8 @@ func (c *PublicData) GetInstruments(ctx context.Context, req requests.GetInstrum
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -52,8 +51,8 @@ func (c *PublicData) GetDeliveryExerciseHistory(ctx context.Context, req request
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -69,8 +68,8 @@ func (c *PublicData) GetOpenInterest(ctx context.Context, req requests.GetOpenIn
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -86,8 +85,8 @@ func (c *PublicData) GetLimitPrice(ctx context.Context, req requests.GetLimitPri
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -103,8 +102,8 @@ func (c *PublicData) GetOptionMarketData(ctx context.Context, req requests.GetOp
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -120,8 +119,8 @@ func (c *PublicData) GetEstimatedDeliveryExercisePrice(ctx context.Context, req 
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -137,8 +136,8 @@ func (c *PublicData) GetDiscountRateAndInterestFreeQuota(ctx context.Context, re
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -153,8 +152,8 @@ func (c *PublicData) GetSystemTime(ctx context.Context) (response responses.GetS
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -185,8 +184,8 @@ func (c *PublicData) GetLiquidationOrders(ctx context.Context, req requests.GetL
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -204,8 +203,8 @@ func (c *PublicData) GetMarkPrice(ctx context.Context, req requests.GetMarkPrice
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -221,8 +220,8 @@ func (c *PublicData) GetPositionTiers(ctx context.Context, req requests.GetPosit
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -237,8 +236,8 @@ func (c *PublicData) GetInterestRateAndLoanQuota(ctx context.Context) (response 
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -253,7 +252,7 @@ func (c *PublicData) GetUnderlying(ctx context.Context, req requests.GetUnderlyi
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }

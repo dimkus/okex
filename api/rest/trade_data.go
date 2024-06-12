@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/tradedata"
 	responses "github.com/dimkus/okex/responses/trade_data"
@@ -32,8 +31,8 @@ func (c *TradeData) GetSupportCoin(ctx context.Context) (response responses.GetS
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -49,8 +48,8 @@ func (c *TradeData) GetTakerVolume(ctx context.Context, req requests.GetTakerVol
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -66,8 +65,8 @@ func (c *TradeData) GetMarginLendingRatio(ctx context.Context, req requests.GetR
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -83,8 +82,8 @@ func (c *TradeData) GetLongShortRatio(ctx context.Context, req requests.GetRatio
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -100,8 +99,8 @@ func (c *TradeData) GetContractsOpenInterestAndVolume(ctx context.Context, req r
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -117,8 +116,8 @@ func (c *TradeData) GetOptionsOpenInterestAndVolume(ctx context.Context, req req
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -134,8 +133,8 @@ func (c *TradeData) GetPutCallRatio(ctx context.Context, req requests.GetRatio) 
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -151,8 +150,8 @@ func (c *TradeData) GetOpenInterestAndVolumeExpiry(ctx context.Context, req requ
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -168,8 +167,8 @@ func (c *TradeData) GetOpenInterestAndVolumeStrike(ctx context.Context, req requ
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -185,7 +184,7 @@ func (c *TradeData) GetTakerFlow(ctx context.Context, req requests.GetRatio) (re
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+
+	err = c.client.decode(res.Body, &response)
 	return
 }

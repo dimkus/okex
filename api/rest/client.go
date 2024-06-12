@@ -7,10 +7,13 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/public"
+	responses2 "github.com/dimkus/okex/responses"
 	responses "github.com/dimkus/okex/responses/public_data"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -141,4 +144,20 @@ func (c *ClientRest) sign(method, path, body string) (string, string) {
 	h := hmac.New(sha256.New, c.secretKey)
 	h.Write(p)
 	return ts, base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
+
+func (c *ClientRest) decode(reader io.Reader, v any) error {
+	err := json.NewDecoder(reader).Decode(&v)
+
+	_, ok := v.(responses2.BasicI)
+	if !ok {
+		return err
+	}
+
+	vBasic := v.(responses2.BasicI)
+	if vBasic.GetCode() != 0 {
+		return errors.New(fmt.Sprintf("code: %d, msg: %s", vBasic.GetCode(), vBasic.GetMsg()))
+	}
+
+	return err
 }

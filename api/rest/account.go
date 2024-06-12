@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/account"
 	responses "github.com/dimkus/okex/responses/account"
@@ -37,9 +36,8 @@ func (c *Account) GetBalance(ctx context.Context, req requests.GetBalance) (resp
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -61,9 +59,8 @@ func (c *Account) GetPositions(ctx context.Context, req requests.GetPositions) (
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -79,9 +76,8 @@ func (c *Account) GetAccountAndPositionRisk(ctx context.Context, req requests.Ge
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -104,9 +100,8 @@ func (c *Account) GetBills(ctx context.Context, req requests.GetBills, arc bool)
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -121,9 +116,8 @@ func (c *Account) GetConfig(ctx context.Context) (response responses.GetConfig, 
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -139,9 +133,8 @@ func (c *Account) SetPositionMode(ctx context.Context, req requests.SetPositionM
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -164,9 +157,8 @@ func (c *Account) SetLeverage(ctx context.Context, req requests.SetLeverage) (re
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -184,9 +176,8 @@ func (c *Account) GetMaxBuySellAmount(ctx context.Context, req requests.GetMaxBu
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -201,9 +192,8 @@ func (c *Account) GetMaxAvailableTradeAmount(ctx context.Context, req requests.G
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -219,9 +209,8 @@ func (c *Account) IncreaseDecreaseMargin(ctx context.Context, req requests.Incre
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -239,9 +228,8 @@ func (c *Account) GetLeverage(ctx context.Context, req requests.GetLeverage) (re
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -256,9 +244,8 @@ func (c *Account) GetMaxLoan(ctx context.Context, req requests.GetMaxLoan) (resp
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -273,9 +260,8 @@ func (c *Account) GetFeeRates(ctx context.Context, req requests.GetFeeRates) (re
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -290,9 +276,8 @@ func (c *Account) GetInterestAccrued(ctx context.Context, req requests.GetIntere
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -311,9 +296,8 @@ func (c *Account) GetInterestRates(ctx context.Context, req requests.GetBalance)
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
 
+	err = c.client.decode(res.Body, &response)
 	return
 }
 
@@ -329,8 +313,7 @@ func (c *Account) SetGreeks(ctx context.Context, req requests.SetGreeks) (respon
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+	err = c.client.decode(res.Body, &response)
 
 	return
 }
@@ -349,8 +332,7 @@ func (c *Account) GetMaxWithdrawals(ctx context.Context, req requests.GetBalance
 		return
 	}
 	defer res.Body.Close()
-	d := json.NewDecoder(res.Body)
-	err = d.Decode(&response)
+	err = c.client.decode(res.Body, &response)
 
 	return
 }
