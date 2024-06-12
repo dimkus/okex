@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/subaccount"
@@ -25,10 +26,10 @@ func NewSubAccount(c *ClientRest) *SubAccount {
 // applies to master accounts only
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-view-sub-account-list
-func (c *SubAccount) ViewList(req requests.ViewList) (response responses.ViewList, err error) {
+func (c *SubAccount) ViewList(ctx context.Context, req requests.ViewList) (response responses.ViewList, err error) {
 	p := "/api/v5/users/subaccount/list"
 	m := okex.S2M(req)
-	res, err := c.client.Do(http.MethodGet, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodGet, p, true, m)
 	if err != nil {
 		return
 	}
@@ -42,13 +43,13 @@ func (c *SubAccount) ViewList(req requests.ViewList) (response responses.ViewLis
 // applies to master accounts only
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-create-an-apikey-for-a-sub-account
-func (c *SubAccount) CreateAPIKey(req requests.CreateAPIKey) (response responses.APIKey, err error) {
+func (c *SubAccount) CreateAPIKey(ctx context.Context, req requests.CreateAPIKey) (response responses.APIKey, err error) {
 	p := "/api/v5/users/subaccount/apikey"
 	m := okex.S2M(req)
 	if len(req.IP) > 0 {
 		m["ip"] = strings.Join(req.IP, ",")
 	}
-	res, err := c.client.Do(http.MethodPost, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodPost, p, true, m)
 	if err != nil {
 		return
 	}
@@ -62,10 +63,10 @@ func (c *SubAccount) CreateAPIKey(req requests.CreateAPIKey) (response responses
 // applies to master accounts only
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-query-the-apikey-of-a-sub-account
-func (c *SubAccount) QueryAPIKey(req requests.QueryAPIKey) (response responses.APIKey, err error) {
+func (c *SubAccount) QueryAPIKey(ctx context.Context, req requests.QueryAPIKey) (response responses.APIKey, err error) {
 	p := "/api/v5/users/subaccount/apikey"
 	m := okex.S2M(req)
-	res, err := c.client.Do(http.MethodGet, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodGet, p, true, m)
 	if err != nil {
 		return
 	}
@@ -79,13 +80,13 @@ func (c *SubAccount) QueryAPIKey(req requests.QueryAPIKey) (response responses.A
 // applies to master accounts only
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-reset-the-apikey-of-a-sub-account
-func (c *SubAccount) ResetAPIKey(req requests.CreateAPIKey) (response responses.APIKey, err error) {
+func (c *SubAccount) ResetAPIKey(ctx context.Context, req requests.CreateAPIKey) (response responses.APIKey, err error) {
 	p := "/api/v5/users/subaccount/modify-apikey"
 	m := okex.S2M(req)
 	if len(req.IP) > 0 {
 		m["ip"] = strings.Join(req.IP, ",")
 	}
-	res, err := c.client.Do(http.MethodPost, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodPost, p, true, m)
 	if err != nil {
 		return
 	}
@@ -99,10 +100,10 @@ func (c *SubAccount) ResetAPIKey(req requests.CreateAPIKey) (response responses.
 // applies to master accounts only
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-delete-the-apikey-of-sub-accounts
-func (c *SubAccount) DeleteAPIKey(req requests.DeleteAPIKey) (response responses.APIKey, err error) {
+func (c *SubAccount) DeleteAPIKey(ctx context.Context, req requests.DeleteAPIKey) (response responses.APIKey, err error) {
 	p := "/api/v5/users/subaccount/delete-apikey"
 	m := okex.S2M(req)
-	res, err := c.client.Do(http.MethodPost, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodPost, p, true, m)
 	if err != nil {
 		return
 	}
@@ -117,10 +118,10 @@ func (c *SubAccount) DeleteAPIKey(req requests.DeleteAPIKey) (response responses
 // (applies to master accounts only)
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-get-sub-account-balance
-func (c *SubAccount) GetBalance(req requests.GetBalance) (response responses.GetBalance, err error) {
+func (c *SubAccount) GetBalance(ctx context.Context, req requests.GetBalance) (response responses.GetBalance, err error) {
 	p := "/api/v5/account/subaccount/balances"
 	m := okex.S2M(req)
-	res, err := c.client.Do(http.MethodGet, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodGet, p, true, m)
 	if err != nil {
 		return
 	}
@@ -134,10 +135,10 @@ func (c *SubAccount) GetBalance(req requests.GetBalance) (response responses.Get
 // applies to master accounts only
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-history-of-sub-account-transfer
-func (c *SubAccount) HistoryTransfer(req requests.HistoryTransfer) (response responses.HistoryTransfer, err error) {
+func (c *SubAccount) HistoryTransfer(ctx context.Context, req requests.HistoryTransfer) (response responses.HistoryTransfer, err error) {
 	p := "/api/v5/account/subaccount/bills"
 	m := okex.S2M(req)
-	res, err := c.client.Do(http.MethodGet, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodGet, p, true, m)
 	if err != nil {
 		return
 	}
@@ -151,10 +152,10 @@ func (c *SubAccount) HistoryTransfer(req requests.HistoryTransfer) (response res
 // applies to master accounts only
 //
 // https://www.okex.com/docs-v5/en/#rest-api-subaccount-master-accounts-manage-the-transfers-between-sub-accounts
-func (c *SubAccount) ManageTransfers(req requests.ManageTransfers) (response responses.ManageTransfer, err error) {
+func (c *SubAccount) ManageTransfers(ctx context.Context, req requests.ManageTransfers) (response responses.ManageTransfer, err error) {
 	p := "/api/v5/account/subaccount/transfer"
 	m := okex.S2M(req)
-	res, err := c.client.Do(http.MethodPost, p, true, m)
+	res, err := c.client.Do(ctx, http.MethodPost, p, true, m)
 	if err != nil {
 		return
 	}

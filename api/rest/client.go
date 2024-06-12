@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bytes"
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -17,19 +18,20 @@ import (
 
 // ClientRest is the rest api client
 type ClientRest struct {
-	Account     *Account
-	SubAccount  *SubAccount
-	Trade       *Trade
-	Funding     *Funding
-	Market      *Market
-	PublicData  *PublicData
-	TradeData   *TradeData
-	apiKey      string
-	secretKey   []byte
-	passphrase  string
-	destination okex.Destination
-	baseURL     okex.BaseURL
-	client      *http.Client
+	Account        *Account
+	SubAccount     *SubAccount
+	Trade          *Trade
+	Funding        *Funding
+	Market         *Market
+	PublicData     *PublicData
+	TradeData      *TradeData
+	apiKey         string
+	secretKey      []byte
+	passphrase     string
+	destination    okex.Destination
+	baseURL        okex.BaseURL
+	client         *http.Client
+	serverTimeDiff time.Duration
 }
 
 // NewClient returns a pointer to a fresh ClientRest
@@ -53,7 +55,7 @@ func NewClient(apiKey, secretKey, passphrase string, baseURL okex.BaseURL, desti
 }
 
 // Do the http request to the server
-func (c *ClientRest) Do(method, path string, private bool, params ...map[string]string) (*http.Response, error) {
+func (c *ClientRest) Do(ctx context.Context, method, path string, private bool, params ...map[string]string) (*http.Response, error) {
 	u := fmt.Sprintf("%s%s", c.baseURL, path)
 	var (
 		r    *http.Request
@@ -62,7 +64,7 @@ func (c *ClientRest) Do(method, path string, private bool, params ...map[string]
 		body string
 	)
 	if method == http.MethodGet {
-		r, err = http.NewRequest(http.MethodGet, u, nil)
+		r, err = http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -86,7 +88,7 @@ func (c *ClientRest) Do(method, path string, private bool, params ...map[string]
 		if body == "{}" {
 			body = ""
 		}
-		r, err = http.NewRequest(method, u, bytes.NewBuffer(j))
+		r, err = http.NewRequestWithContext(ctx, method, u, bytes.NewBuffer(j))
 		if err != nil {
 			return nil, err
 		}
@@ -112,10 +114,10 @@ func (c *ClientRest) Do(method, path string, private bool, params ...map[string]
 // Get event status of system upgrade
 //
 // https://www.okex.com/docs-v5/en/#rest-api-status
-func (c *ClientRest) Status(req requests.Status) (response responses.Status, err error) {
+func (c *ClientRest) Status(ctx context.Context, req requests.Status) (response responses.Status, err error) {
 	p := "/api/v5/system/status"
 	m := okex.S2M(req)
-	res, err := c.Do(http.MethodGet, p, false, m)
+	res, err := c.Do(ctx, http.MethodGet, p, false, m)
 	if err != nil {
 		return
 	}
@@ -125,9 +127,14 @@ func (c *ClientRest) Status(req requests.Status) (response responses.Status, err
 	return
 }
 
+func (c *ClientRest) SetSystemTimeDiff(timeDiff time.Duration) {
+	c.serverTimeDiff = timeDiff
+}
+
 func (c *ClientRest) sign(method, path, body string) (string, string) {
 	format := "2006-01-02T15:04:05.999Z07:00"
-	t := time.Now().UTC().Format(format)
+	currentTime := time.Now().Add(c.serverTimeDiff).UTC()
+	t := currentTime.Format(format)
 	ts := fmt.Sprint(t)
 	s := ts + method + path + body
 	p := []byte(s)
