@@ -57,6 +57,11 @@ func NewClient(apiKey, secretKey, passphrase string, baseURL okex.BaseURL, desti
 	return c
 }
 
+func (c *ClientRest) WithHTTPClient(httpClient *http.Client) *ClientRest {
+	c.client = httpClient
+	return c
+}
+
 // Do the http request to the server
 func (c *ClientRest) Do(ctx context.Context, method, path string, private bool, params ...map[string]string) (*http.Response, error) {
 	u := fmt.Sprintf("%s%s", c.baseURL, path)
