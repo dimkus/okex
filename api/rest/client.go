@@ -6,13 +6,13 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/dimkus/okex"
 	requests "github.com/dimkus/okex/requests/rest/public"
 	responses2 "github.com/dimkus/okex/responses"
 	responses "github.com/dimkus/okex/responses/public_data"
+	"github.com/goccy/go-json"
 	"io"
 	"net/http"
 	"strings"
@@ -76,7 +76,6 @@ func (c *ClientRest) Do(ctx context.Context, method, path string, private bool, 
 		if err != nil {
 			return nil, err
 		}
-
 		if len(params) > 0 {
 			q := r.URL.Query()
 			for k, v := range params[0] {
@@ -154,9 +153,13 @@ func (c *ClientRest) sign(method, path, body string) (string, string) {
 func (c *ClientRest) decode(reader io.Reader, v any) error {
 	err := json.NewDecoder(reader).Decode(&v)
 
+	if err != nil {
+		return err
+	}
+
 	_, ok := v.(responses2.BasicI)
 	if !ok {
-		return err
+		return nil
 	}
 
 	vBasic := v.(responses2.BasicI)
@@ -164,5 +167,5 @@ func (c *ClientRest) decode(reader io.Reader, v any) error {
 		return errors.New(fmt.Sprintf("code: %d, msg: %s", vBasic.GetCode(), vBasic.GetMsg()))
 	}
 
-	return err
+	return nil
 }
