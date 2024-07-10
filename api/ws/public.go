@@ -303,12 +303,18 @@ func (p *Public) UOPTIONSummary(req requests.OPTIONSummary, rCh ...bool) error {
 // Retrieve funding rate. Data will be pushed every minute.
 //
 // https://www.okex.com/docs-v5/en/#websocket-api-public-channels-funding-rate-channel
-func (p *Public) FundingRate(req requests.FundingRate, ch ...chan *public.FundingRate) error {
-	m := okex.S2M(req)
+func (p *Public) FundingRate(reqs []requests.FundingRate, ch ...chan *public.FundingRate) error {
 	if len(ch) > 0 {
 		p.frCh = ch[0]
 	}
-	return p.Subscribe(false, []okex.ChannelName{"funding-rate"}, m)
+
+	var subscriptions []map[string]string
+	for _, req := range reqs {
+		m := okex.S2M(req)
+		subscriptions = append(subscriptions, m)
+	}
+
+	return p.Subscribe(false, []okex.ChannelName{"funding-rate"}, subscriptions...)
 }
 
 // UFundingRate
@@ -466,15 +472,15 @@ func (p *Public) Process(data []byte, e *events.Basic) bool {
 			p.osCh <- e
 			return true
 		case "funding-rate":
-			if p.osCh == nil {
+			if p.frCh == nil {
 				return false
 			}
-			e := new(public.OPTIONSummary)
+			e := new(public.FundingRate)
 			err := json.Unmarshal(data, e)
 			if err != nil {
 				return false
 			}
-			p.osCh <- e
+			p.frCh <- e
 			return true
 		case "index-tickers":
 			if p.itCh == nil {
